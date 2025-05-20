@@ -1,13 +1,13 @@
 import streamlit as st
 from ultralytics import YOLO
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
-import io
 import yaml
 
+# Загружаем кастомные имена классов
 with open("data.yaml") as f:
     data = yaml.safe_load(f)
-classes = data['names']
+classes = data['names']  # используем это!
 
 st.title("🚆 Railway Object Detection")
 
@@ -24,20 +24,21 @@ if uploaded_file is not None:
     st.image(image, caption="Оригинальное изображение", use_container_width=True)
 
     img_array = np.array(image)
-
     results = model(img_array)
+    result = results[0]
 
-    annotated_img = results[0].plot()
-    
-    for box in results.boxes:
+    # Копируем изображение для кастомной отрисовки
+    annotated_image = image.copy()
+    draw = ImageDraw.Draw(annotated_image)
+    font = ImageFont.load_default()
+
+    for box in result.boxes:
         cls_id = int(box.cls[0].item())
         conf = box.conf[0].item()
-        label = f"{custom_names[cls_id]} {conf:.2f}"
+        label = f"{classes[cls_id]} {conf:.2f}"
 
         x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
         draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
         draw.text((x1, y1 - 10), label, fill="red", font=font)
 
-
-
-    st.image(annotated_img, caption="Распознанные объекты", use_container_width=True)
+    st.image(annotated_image, caption="Распознанные объекты", use_container_width=True)
