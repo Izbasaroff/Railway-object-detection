@@ -1,0 +1,16 @@
+torch
+torchaudio
+torchvision
+opencv-python
+numpy
+matplotlib
+pillow
+pandas
+scikit-learn
+ultralytics
+tqdm
+roboflow
+streamlit
+ipykernel
+jupyter
+ultralytics
