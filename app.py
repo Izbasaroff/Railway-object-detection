@@ -5,7 +5,7 @@ import numpy as np
 import io
 
 # Загружаем модель
-model = YOLO("C:/Users/izbas/Downloads/rod/runs/detect/exp1/weights/best.pt") 
+model = YOLO("best.pt") 
 
 st.title("🚆 Railway Object Detection")
 st.write("Загрузите изображения")
@@ -17,18 +17,14 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
         st.image(uploaded_file, caption=f"Оригинал: {uploaded_file.name}", use_column_width=True)
 
-        # Читаем изображение
         image = Image.open(uploaded_file).convert("RGB")
         image_array = np.array(image)
 
-        # Инференс
         results = model.predict(image_array, conf=0.25)
 
-        # Отображаем изображение с bbox
         result_image = Image.fromarray(results[0].plot())
         st.image(result_image, caption="Результат YOLOv8", use_column_width=True)
 
-        # Отображаем таблицу предсказаний
         boxes = results[0].boxes.xyxy.cpu().numpy()
         scores = results[0].boxes.conf.cpu().numpy()
         classes = results[0].boxes.cls.cpu().numpy().astype(int)
