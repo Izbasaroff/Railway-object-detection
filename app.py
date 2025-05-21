@@ -30,7 +30,7 @@ if uploaded_file is not None:
             break
 
     if detected_class_0:
-        st.error("🚨 Обнаружен объект класса 0!")
+        st.error("🚨 Обнаружен объект!")
 
     annotated_img = results[0].plot()
     st.image(annotated_img, caption="Распознанные объекты", use_container_width=True)
